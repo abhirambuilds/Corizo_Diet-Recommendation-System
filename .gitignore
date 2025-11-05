@@ -8,6 +8,8 @@ __pycache__/
 # Jupyter Notebooks
 .ipynb_checkpoints/
 *.ipynb
+# Allow .ipynb files in _archive folder
+!_archive/**/*.ipynb
 
 # Environment
 .env
@@ -32,9 +34,6 @@ ENV/
 ehthumbs.db
 Thumbs.db
 Desktop.ini
-
-# Archive
-_archive/
 
 # Node (if ever used)
 node_modules/
