@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Recommendation System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍎 Personalized Diet Recommendations</h1>
+            <p>Enter your health information to get personalized food recommendations</p>
+        </header>
+
+        <main>
+            <!-- API Error Alert (Top) -->
+            <div id="apiErrorAlert" class="api-error-alert" style="display: none;">
+                <p id="apiErrorText"></p>
+            </div>
+
+            <form id="dietForm" class="diet-form form" novalidate>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="Age" min="1" max="100" placeholder=" " required>
+                        <span class="error-message" id="age-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bmi">BMI</label>
+                        <input type="number" id="bmi" name="BMI" min="10" max="60" step="0.1" placeholder=" " required>
+                        <span class="error-message" id="bmi-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chronic">Chronic Disease</label>
+                        <select id="chronic" name="Chronic_Disease" required>
+                            <option value="">Select...</option>
+                            <option value="None">None</option>
+                            <option value="Diabetes">Diabetes</option>
+                            <option value="Heart Disease">Heart Disease</option>
+                            <option value="Hypertension">Hypertension</option>
+                            <option value="Obesity">Obesity</option>
+                        </select>
+                        <span class="error-message" id="chronic-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bps">Blood Pressure (Systolic)</label>
+                        <input type="number" id="bps" name="Blood_Pressure_Systolic" min="80" max="200" placeholder=" " required>
+                        <span class="error-message" id="bps-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bsl">Blood Sugar Level</label>
+                        <input type="number" id="bsl" name="Blood_Sugar_Level" min="50" max="400" placeholder=" " required>
+                        <span class="error-message" id="bsl-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="steps">Daily Steps</label>
+                        <input type="number" id="steps" name="Daily_Steps" min="0" max="30000" placeholder=" " required>
+                        <span class="error-message" id="steps-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exercise">Exercise Frequency (per week)</label>
+                        <input type="number" id="exercise" name="Exercise_Frequency" min="0" max="7" placeholder=" " required>
+                        <span class="error-message" id="exercise-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alcohol">Alcohol Consumption</label>
+                        <select id="alcohol" name="Alcohol_Consumption" required>
+                            <option value="">Select...</option>
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                        <span class="error-message" id="alcohol-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="smoking">Smoking Habit</label>
+                        <select id="smoking" name="Smoking_Habit" required>
+                            <option value="">Select...</option>
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                        <span class="error-message" id="smoking-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diet">Dietary Habits</label>
+                        <select id="diet" name="Dietary_Habits" required>
+                            <option value="">Select...</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Keto">Keto</option>
+                        </select>
+                        <span class="error-message" id="diet-error"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Get Recommendations</span>
+                    <span class="spinner" id="spinner" style="display: none;">
+                        <svg class="spinner-icon" viewBox="0 0 24 24">
+                            <circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke-width="2"/>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                <div class="spinner-content">
+                    <svg class="spinner-icon-large" viewBox="0 0 24 24">
+                        <circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke-width="2"/>
+                    </svg>
+                    <p>Analyzing your profile...</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <!-- Summary Header -->
+                <div class="summary-header">
+                    <div class="summary-item">
+                        <span class="summary-label">Your Diet Profile:</span>
+                        <span class="summary-value" id="summaryProfileName"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Plan:</span>
+                        <span class="summary-value" id="summaryRecommendationType"></span>
+                    </div>
+                    <button id="downloadJsonBtn" class="download-btn">
+                        <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download JSON
+                    </button>
+                </div>
+
+                <div class="results-header">
+                    <h2 id="profileName"></h2>
+                    <p class="recommendation-type" id="recommendationType"></p>
+                </div>
+
+                <div class="table-container">
+                    <table id="resultsTable" class="results-table">
+                        <thead class="sticky-header">
+                            <tr>
+                                <th>Food</th>
+                                <th>Category</th>
+                                <th>Protein (g)</th>
+                                <th>Fat (g)</th>
+                                <th>Carbs (g)</th>
+                                <th>Calories</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <p id="errorText"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
+
