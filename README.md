@@ -307,6 +307,10 @@ diet-app/
 - All numeric values are validated and NaN values are filled with 0
 - The scoring algorithm prioritizes high protein, low fat, and low calories
 
+## 👤 Author
+
+**K Abhiram Reddy**
+
 ## 📄 License
 
 This project is available for educational and personal use.
